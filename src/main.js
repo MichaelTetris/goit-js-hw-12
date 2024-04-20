@@ -1,17 +1,16 @@
 import { searchImages } from './js/pixabay-api.js';
 import { renderGallery } from './js/render-function.js';
 
-import SimpleLightbox from "simplelightbox";
-import "simplelightbox/dist/simple-lightbox.min.css";
+import SimpleLightbox from 'simplelightbox';
+import 'simplelightbox/dist/simple-lightbox.min.css';
 
-import iziToast from "izitoast";
-import "izitoast/dist/css/iziToast.min.css";
-
-
-
+import iziToast from 'izitoast';
+import 'izitoast/dist/css/iziToast.min.css';
 
 const form = document.querySelector('.search-form');
 const loader = document.querySelector('.loader');
+/* const loadMoreBtn = document.querySelector('.load-more-btn');
+console.log(loadMoreBtn); */
 
 const gallery = document.querySelector('.list_gallery');
 const lightbox = new SimpleLightbox('.card .place-for-image a', {
@@ -38,7 +37,7 @@ function handleSearch(event) {
           color: 'red',
           position: 'topRight',
           timeout: '5000',
-        })
+        });
         event.target.reset();
         return 0;
       } else {
@@ -57,11 +56,8 @@ function handleSearch(event) {
         position: 'topCenter',
         timeout: '5000',
       });
-      
     })
     .finally(() => {
-      
       loader.style.display = 'none';
     });
 }
-
