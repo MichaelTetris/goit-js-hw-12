@@ -137,3 +137,18 @@ button:hover {
   color: #2e2f42;
 }
 
+.more-button-box{
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.load-more-btn{
+  margin-top: 32px;
+
+  display: none;
+  align-items: center;
+
+  width: auto;
+}
+
