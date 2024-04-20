@@ -9,6 +9,7 @@ import "izitoast/dist/css/iziToast.min.css";
 
 
 
+
 const form = document.querySelector('.search-form');
 const loader = document.querySelector('.loader');
 
