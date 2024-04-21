@@ -27,13 +27,12 @@ async function handleSearch(event) {
   event.preventDefault();
   gallery.innerHTML = '';
   loader.style.display = 'inline-block';
-  loadMoreBtn.style.display = "none";
+  loadMoreBtn.style.display = 'none';
   searchWord = event.currentTarget.elements.inputElement.value.trim();
 
   page = 1;
   try {
-  await searchImages(searchWord, page, gallery)
-    .then(response => {
+    await searchImages(searchWord, page, gallery).then(response => {
       console.log(response);
       if (!response || response.data.total === 0) {
         console.log('No data or no images found:', response.data);
@@ -57,13 +56,12 @@ async function handleSearch(event) {
       lightbox.refresh();
       event.target.reset();
       pageLimit = Math.floor(response.data.totalHits / 15);
-    })}
-    catch(error){
-      console.error('Error fetching images:', error);
-    }
-    finally {
-      loader.style.display = 'none';
-    };
+    });
+  } catch (error) {
+    console.error('Error fetching images:', error);
+  } finally {
+    loader.style.display = 'none';
+  }
 }
 
 loadMoreBtn.addEventListener('click', moreLoad);
@@ -75,8 +73,7 @@ async function moreLoad(event) {
   console.log(searchWord);
   page += 1;
   try {
-  await searchImages(searchWord, page, gallery)
-    .then(response => {
+    await searchImages(searchWord, page, gallery).then(response => {
       if (!response || response.data.total === 0) {
         console.log('No data or no images found:', response.data);
         iziToast.show({
@@ -99,7 +96,6 @@ async function moreLoad(event) {
       const { height } = liElement.getBoundingClientRect();
       scrollVertical(height * 2, 0);
 
-
       loadMoreBtn.style.display = 'block';
       lightbox.refresh();
       if (page === pageLimit) {
@@ -114,13 +110,12 @@ async function moreLoad(event) {
         });
         loadMoreBtn.style.display = 'none';
       }
-    })}
-    catch{
-      console.error('Error fetching images:', error);
-    }
-    finally {
-      loader.style.display = 'none';
-    };
+    });
+  } catch {
+    console.error('Error fetching images:', error);
+  } finally {
+    loader.style.display = 'none';
+  }
 }
 
 function scrollVertical(x = 0, y = 0) {
