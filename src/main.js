@@ -11,39 +11,31 @@ const form = document.querySelector('.search-form');
 const loader = document.querySelector('.loader');
 const loadMoreBtn = document.querySelector('.load-more-btn');
 
-
 const gallery = document.querySelector('.list_gallery');
 const lightbox = new SimpleLightbox('.card .place-for-image a', {
   captionsData: 'alt',
   captionDelay: 250,
 });
 
-
 let page = 1;
 let pageLimit;
+let searchWord;
 
 form.addEventListener('submit', handleSearch);
 
-
-let searchWord ;
-
-function handleSearch(event) {
+async function handleSearch(event) {
   event.preventDefault();
   gallery.innerHTML = '';
   loader.style.display = 'inline-block';
   loadMoreBtn.style.display = "none";
-  searchWord = event.currentTarget.elements.inputElement.value.trim(); 
+  searchWord = event.currentTarget.elements.inputElement.value.trim();
 
-  console.log(searchWord);
   page = 1;
-
-  searchImages(searchWord, page, gallery)
-
-  
+  try {
+  await searchImages(searchWord, page, gallery)
     .then(response => {
       console.log(response);
       if (!response || response.data.total === 0) {
-        // Проверка на наличие данных и их корректность
         console.log('No data or no images found:', response.data);
         iziToast.show({
           title: 'Ops.',
@@ -59,42 +51,33 @@ function handleSearch(event) {
         return;
       }
 
-      // Если данные корректны, обновляем галерею и показываем кнопку "Load More"
       gallery.insertAdjacentHTML('beforeend', renderGallery(response.data));
       loadMoreBtn.style.display = 'block';
-      /* page = 1; */
+
       lightbox.refresh();
       event.target.reset();
       pageLimit = Math.floor(response.data.totalHits / 15);
-      
-    })
-    .catch(error => {
+    })}
+    catch(error){
       console.error('Error fetching images:', error);
-    })
-    .finally(() => {
+    }
+    finally {
       loader.style.display = 'none';
-    });
+    };
 }
 
 loadMoreBtn.addEventListener('click', moreLoad);
 
-
-
-function moreLoad(event){
+async function moreLoad(event) {
   event.preventDefault();
-  /* console.log("ok") */
- 
-   /* loader.style.display = 'inline-block'; */
-  
+  loader.style.display = 'inline-block';
 
   console.log(searchWord);
   page += 1;
-
-  searchImages(searchWord, page, gallery)
+  try {
+  await searchImages(searchWord, page, gallery)
     .then(response => {
-      
       if (!response || response.data.total === 0) {
-        
         console.log('No data or no images found:', response.data);
         iziToast.show({
           title: 'Ops.',
@@ -110,33 +93,36 @@ function moreLoad(event){
         return;
       }
 
-      
       gallery.insertAdjacentHTML('beforeend', renderGallery(response.data));
+
+      const liElement = document.querySelector('li');
+      const { height } = liElement.getBoundingClientRect();
+      scrollVertical(height * 2, 0);
+
+
       loadMoreBtn.style.display = 'block';
-       
       lightbox.refresh();
-      if(page === pageLimit){
+      if (page === pageLimit) {
         iziToast.show({
           title: 'Ops.',
           titleColor: 'white',
-          message:
-            'This is last page, sorry!',
+          message: 'This is last page, sorry!',
           messageColor: 'white',
           color: 'red',
           position: 'topRight',
           timeout: 5000,
         });
-        loadMoreBtn.style.display = "none";
+        loadMoreBtn.style.display = 'none';
       }
-      /* event.target.reset(); */
-      
-    })
-    .catch(error => {
+    })}
+    catch{
       console.error('Error fetching images:', error);
-    })
-    .finally(() => {
+    }
+    finally {
       loader.style.display = 'none';
-    }); 
+    };
 }
 
-
+function scrollVertical(x = 0, y = 0) {
+  window.scrollBy({ top: x, left: y, behavior: 'smooth' });
+}
