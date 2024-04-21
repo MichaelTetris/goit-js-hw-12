@@ -31,15 +31,20 @@ function handleSearch(event) {
   event.preventDefault();
   gallery.innerHTML = '';
   loader.style.display = 'inline-block';
+  loadMoreBtn.style.display = "none";
   searchWord = event.currentTarget.elements.inputElement.value.trim(); 
 
   console.log(searchWord);
+  page = 1;
 
-  searchImages(searchWord, loader, gallery)
-    .then(data => {
-      if (!data || data.total === 0) {
+  searchImages(searchWord, page, gallery)
+
+  
+    .then(response => {
+      console.log(response);
+      if (!response || response.data.total === 0) {
         // Проверка на наличие данных и их корректность
-        console.log('No data or no images found:', data);
+        console.log('No data or no images found:', response.data);
         iziToast.show({
           title: 'Ops.',
           titleColor: 'white',
@@ -55,12 +60,13 @@ function handleSearch(event) {
       }
 
       // Если данные корректны, обновляем галерею и показываем кнопку "Load More"
-      gallery.insertAdjacentHTML('beforeend', renderGallery(data));
+      gallery.insertAdjacentHTML('beforeend', renderGallery(response.data));
       loadMoreBtn.style.display = 'block';
       /* page = 1; */
       lightbox.refresh();
       event.target.reset();
-      /* lastPage(data); */
+      pageLimit = Math.floor(response.data.totalHits / 15);
+      
     })
     .catch(error => {
       console.error('Error fetching images:', error);
@@ -72,9 +78,65 @@ function handleSearch(event) {
 
 loadMoreBtn.addEventListener('click', moreLoad);
 
-function moreLoad(){
-  /* loader.style.display ="block"; */
-  console.log("ok")
+
+
+function moreLoad(event){
+  event.preventDefault();
+  /* console.log("ok") */
+ 
+   /* loader.style.display = 'inline-block'; */
+  
+
+  console.log(searchWord);
+  page += 1;
+
+  searchImages(searchWord, page, gallery)
+    .then(response => {
+      
+      if (!response || response.data.total === 0) {
+        
+        console.log('No data or no images found:', response.data);
+        iziToast.show({
+          title: 'Ops.',
+          titleColor: 'white',
+          message:
+            'Sorry, there are no images matching your search query. Please try again!',
+          messageColor: 'white',
+          color: 'red',
+          position: 'topRight',
+          timeout: 5000,
+        });
+        event.target.reset();
+        return;
+      }
+
+      
+      gallery.insertAdjacentHTML('beforeend', renderGallery(response.data));
+      loadMoreBtn.style.display = 'block';
+       
+      lightbox.refresh();
+      if(page === pageLimit){
+        iziToast.show({
+          title: 'Ops.',
+          titleColor: 'white',
+          message:
+            'This is last page, sorry!',
+          messageColor: 'white',
+          color: 'red',
+          position: 'topRight',
+          timeout: 5000,
+        });
+        loadMoreBtn.style.display = "none";
+      }
+      /* event.target.reset(); */
+      
+    })
+    .catch(error => {
+      console.error('Error fetching images:', error);
+    })
+    .finally(() => {
+      loader.style.display = 'none';
+    }); 
 }
 
 

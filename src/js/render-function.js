@@ -1,5 +1,6 @@
 export function renderGallery(receivedObject) {
   const neccesaryArray = receivedObject.hits;
+  console.log(receivedObject);
   return neccesaryArray
     .map(
       ({

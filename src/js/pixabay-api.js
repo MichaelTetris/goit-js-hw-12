@@ -3,7 +3,8 @@ import axios from 'axios';
 const API_KEY = '43418044-448fc0127227a847b3808d395';
 const url = 'https://pixabay.com/api/';
 
-export async function searchImages(stringSearch, myGallery) {
+export async function searchImages(stringSearch, page = 1, myGallery) {
+
   const params = new URLSearchParams({
     key: API_KEY,
     q: stringSearch,
@@ -11,18 +12,11 @@ export async function searchImages(stringSearch, myGallery) {
     orientation: 'horizontal',
     safesearch: true,
     per_page: 15,
-    /* page: 1, */
+    page,
   });
 
-  try {
-    const { data, status } = await axios.get(`${url}?${params}`);
+   const response = await axios.get(`${url}?${params}`);
+   return response;
 
-    if (status !== 200) {
-      throw new Error(status);
-    }
-
-    return data;
-  } catch (error) {
-    throw new Error('Failed to fetch images');
-  }
+    
 }
