@@ -11,6 +11,7 @@ export async function searchImages(stringSearch, myGallery) {
     orientation: 'horizontal',
     safesearch: true,
     per_page: 15,
+    /* page: 1, */
   });
 
   try {

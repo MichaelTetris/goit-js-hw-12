@@ -10,7 +10,7 @@ import 'izitoast/dist/css/iziToast.min.css';
 const form = document.querySelector('.search-form');
 const loader = document.querySelector('.loader');
 const loadMoreBtn = document.querySelector('.load-more-btn');
-/* console.log(loadMoreBtn); */
+
 
 const gallery = document.querySelector('.list_gallery');
 const lightbox = new SimpleLightbox('.card .place-for-image a', {
@@ -18,60 +18,21 @@ const lightbox = new SimpleLightbox('.card .place-for-image a', {
   captionDelay: 250,
 });
 
+
+let page = 1;
+let pageLimit;
+
 form.addEventListener('submit', handleSearch);
 
-/* function handleSearch(event) {
-  event.preventDefault();
-  gallery.innerHTML = '';
-  loader.style.display = 'inline-block';
-  const searchWord = event.currentTarget.elements.inputElement.value;
-  console.log(searchWord);
 
-  searchImages(searchWord, loader, gallery)
-    .then(data => {
-      if (data.total == 0) {
-        console.log(data);
-        iziToast.show({
-          title: 'Ops.',
-          titleColor: 'white',
-          message:
-            'Sorry, there are no images matching your search query. Please try again!',
-          messageColor: 'white',
-          color: 'red',
-          position: 'topRight',
-          timeout: '5000',
-        });
-        event.target.reset();
-        return 0;
-      } else {
-        gallery.insertAdjacentHTML('beforeend', renderGallery(data));
-        loadMoreBtn.style.display = 'block';
-        lightbox.refresh();
-        event.target.reset();
-      }
-    })
-    .catch(error => {
-      iziToast.show({
-        title: 'Ops.',
-        titleColor: 'white',
-        message: error,
-        messageColor: 'white',
-        color: 'red',
-        position: 'topCenter',
-        timeout: '5000',
-      });
-    })
-    .finally(() => {
-      loader.style.display = 'none';
-    });
-}
- */
+let searchWord ;
 
 function handleSearch(event) {
   event.preventDefault();
   gallery.innerHTML = '';
   loader.style.display = 'inline-block';
-  const searchWord = event.currentTarget.elements.inputElement.value;
+  searchWord = event.currentTarget.elements.inputElement.value.trim(); 
+
   console.log(searchWord);
 
   searchImages(searchWord, loader, gallery)
@@ -96,8 +57,10 @@ function handleSearch(event) {
       // Если данные корректны, обновляем галерею и показываем кнопку "Load More"
       gallery.insertAdjacentHTML('beforeend', renderGallery(data));
       loadMoreBtn.style.display = 'block';
+      /* page = 1; */
       lightbox.refresh();
       event.target.reset();
+      /* lastPage(data); */
     })
     .catch(error => {
       console.error('Error fetching images:', error);
@@ -106,3 +69,12 @@ function handleSearch(event) {
       loader.style.display = 'none';
     });
 }
+
+loadMoreBtn.addEventListener('click', moreLoad);
+
+function moreLoad(){
+  /* loader.style.display ="block"; */
+  console.log("ok")
+}
+
+
